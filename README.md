@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TalentMatch AI: Intelligent Resume Screening Platform
 
 TalentMatch AI is a hackathon-ready platform that uses NLP and Machine Learning to revolutionize the recruitment process. It doesn't just match keywords; it understands skills, identifies gaps, and provides an automated learning roadmap for candidates.
@@ -44,3 +45,6 @@ This project stands out because:
 1. **Actionable Insights**: Instead of just saying "Rejected", it tells the candidate *how to improve*.
 2. **Modern Architecture**: Clean separation between NLP engine and UI.
 3. **User Experience**: Premium design that looks professional and polished.
+=======
+# TalentMatch
+>>>>>>> 29308b6fde2f3c07f19f616d37d752f6da08e991
