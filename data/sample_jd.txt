@@ -1,0 +1,4 @@
+Senior Data Scientist
+We are looking for a candidate with strong Python and SQL skills.
+Required skills: Python, SQL, Machine Learning, TensorFlow, Deep Learning.
+Must have experience with data visualization and predictive modeling.

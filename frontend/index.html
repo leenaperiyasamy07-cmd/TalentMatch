@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentMatch AI - Resume Screening</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container">
+        <header id="main-header" class="hidden">
+            <div class="logo-area" style="justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="logo-icon">
+                        <i data-lucide="target"></i>
+                    </div>
+                    <div>
+                        <h1>TalentMatch AI</h1>
+                        <p>Intelligent Resume Screening & Learning</p>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn-text">
+                    <i data-lucide="log-out"></i> Logout
+                </button>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-target="student-view" id="student-tab">Student Dashboard</button>
+                <button class="nav-tab" data-target="resume-builder-view" id="resume-builder-tab">AI Resume
+                    Builder</button>
+                <button class="nav-tab" data-target="hr-view" id="hr-tab">HR & Recruiter Engine</button>
+            </nav>
+        </header>
+
+        <main id="app">
+            <!-- Landing / Role Selection View -->
+            <section id="landing-view" class="view active">
+                <div class="landing-hero">
+                    <h2 class="title-large" style="text-align: center; margin-bottom: 3rem;">Welcome to <span>SkillPath
+                            AI</span></h2>
+                    <div class="portal-grid">
+                        <div class="card glass portal-card" id="enter-student">
+                            <div class="portal-icon student-grad">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <h3>Student / Jobseeker</h3>
+                            <p>Analyze your resume, find skill gaps, and generate learning roadmaps to land your dream
+                                job.</p>
+                            <button class="btn-premium">Enter Student Portal</button>
+                        </div>
+
+                        <div class="card glass portal-card" id="enter-hr">
+                            <div class="portal-icon hr-grad">
+                                <i data-lucide="briefcase"></i>
+                            </div>
+                            <h3>HR / Recruiter</h3>
+                            <p>Bulk screen resumes, rank candidates with deep AI analysis, and export technical
+                                shortlists.</p>
+                            <button class="btn-premium">Enter HR Engine</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resume Builder View -->
+            <section id="resume-builder-view" class="view">
+                <div class="grid" style="grid-template-columns: 1fr 1.2fr; align-items: start;">
+                    <!-- Input Form -->
+                    <div class="card glass">
+                        <div class="card-header">
+                            <i data-lucide="plus-circle"></i>
+                            <h2>Resume Details</h2>
+                        </div>
+                        <div class="form-scroll" style="max-height: 70vh; overflow-y: auto; padding-right: 1rem;">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="rb-name" class="input-field" placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Job Title</label>
+                                <input type="text" id="rb-title" class="input-field" placeholder="Full Stack Developer">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Info (Email, Phone, Location)</label>
+                                <input type="text" id="rb-contact" class="input-field"
+                                    placeholder="john@email.com | +123 | NY">
+                            </div>
+                            <div class="form-group">
+                                <label>Professional Summary</label>
+                                <textarea id="rb-summary" class="input-field" style="height: 100px;"></textarea>
+                            </div>
+
+                            <div class="mt-6">
+                                <h4 class="mb-2">Experience</h4>
+                                <div id="rb-exp-container">
+                                    <div class="exp-entry glass p-4 mb-4" style="border-radius: 0.5rem; padding: 1rem;">
+                                        <input type="text" class="input-field mb-2 rb-exp-company"
+                                            placeholder="Company Name">
+                                        <input type="text" class="input-field mb-2 rb-exp-role" placeholder="Role">
+                                        <textarea class="input-field rb-exp-desc"
+                                            placeholder="Responsibilities (one per line)"></textarea>
+                                    </div>
+                                </div>
+                                <button class="btn-text" id="add-exp-btn"><i data-lucide="plus"></i> Add
+                                    Experience</button>
+                            </div>
+
+                            <div class="form-group mt-6">
+                                <label>Skills (Comma separated)</label>
+                                <input type="text" id="rb-skills" class="input-field" placeholder="React, Python, AWS">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div style="position: sticky; top: 2rem;">
+                        <div class="card glass" style="padding: 1rem;">
+                            <div class="card-header" style="justify-content: space-between;">
+                                <h3>Live Preview</h3>
+                                <button class="btn-premium" id="download-resume-btn"
+                                    style="width: auto; padding: 0.5rem 1rem;">
+                                    <i data-lucide="download"></i> Export PDF
+                                </button>
+                            </div>
+                            <div id="resume-preview-doc" class="resume-sheet">
+                                <div class="header-section">
+                                    <h1 id="pv-name">Candidate Name</h1>
+                                    <h3 id="pv-title">Professional Title</h3>
+                                    <div id="pv-contact" class="contact-line">Contact Info</div>
+                                </div>
+
+                                <div class="resume-body">
+                                    <div class="section">
+                                        <div class="section-title">Professional Summary</div>
+                                        <p id="pv-summary">Professional summary goes here...</p>
+                                    </div>
+
+                                    <div class="section">
+                                        <div class="section-title">Experience</div>
+                                        <div id="pv-experience"></div>
+                                    </div>
+
+                                    <div class="section">
+                                        <div class="section-title">Skills</div>
+                                        <div id="pv-skills" class="skill-pills-row"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Student View (Input) -->
+            <section id="student-view" class="view">
+                <div class="grid">
+                    <div class="card glass">
+                        <div class="card-header">
+                            <i data-lucide="upload"></i>
+                            <h2>Upload Resume</h2>
+                        </div>
+                        <form id="analyze-form">
+                            <div class="form-group">
+                                <label>Candidate Name</label>
+                                <input type="text" id="name-input" placeholder="Enter candidate name"
+                                    class="input-field">
+                            </div>
+                            <div class="form-group">
+                                <label>Resume (PDF/DOCX)</label>
+                                <div class="file-dropzone" id="dropzone">
+                                    <input type="file" id="resume-input" accept=".pdf,.docx" hidden>
+                                    <i data-lucide="file-text" class="icon-large"></i>
+                                    <p id="file-name">Click to upload or drag & drop</p>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Role Selection (Appears after Upload) -->
+                            <div id="role-selection-area" class="hidden mt-6">
+                                <label class="block mb-2 text-sm font-medium">Which role do you want to be part
+                                    of?</label>
+                                <div class="role-grid" id="role-options">
+                                    <button type="button" class="role-chip" data-role="IT Systems Administrator">IT
+                                        Admin</button>
+                                    <button type="button" class="role-chip" data-role="Cloud Engineer">Cloud
+                                        Eng</button>
+                                    <button type="button" class="role-chip"
+                                        data-role="Cybersecurity Analyst">Security</button>
+                                    <button type="button" class="role-chip" data-role="Full Stack Developer">Full
+                                        Stack</button>
+                                    <button type="button" class="role-chip" data-role="Data Scientist">Data
+                                        Scientist</button>
+                                    <button type="button" class="role-chip"
+                                        data-role="Backend Developer">Backend</button>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <label>Or enter a specific Job Description</label>
+                                    <textarea id="jd-input" placeholder="Paste the job requirements here..."
+                                        style="min-height: 80px;"></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-premium" id="submit-btn">
+                                <span>Analyze Matching</span>
+                                <i data-lucide="trending-up"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="info-content">
+                        <h2 class="title-large">Evaluate candidates with <span>precision.</span></h2>
+                        <p class="desc">Our AI-driven engine goes beyond simple keyword matching. We analyze semantic
+                            similarity, detect skill gaps, and provide a roadmap for candidate growth.</p>
+                        <div class="features-grid">
+                            <div class="feature-item glass">
+                                <i data-lucide="target"></i>
+                                <div>
+                                    <h3>TF-IDF Match</h3>
+                                    <p>Advanced semantic scoring</p>
+                                </div>
+                            </div>
+                            <div class="feature-item glass">
+                                <i data-lucide="book-open"></i>
+                                <div>
+                                    <h3>Skill Roadmap</h3>
+                                    <p>Automated learning guides</p>
+                                </div>
+                            </div>
+                            <div class="feature-item glass">
+                                <i data-lucide="award"></i>
+                                <div>
+                                    <h3>Ranking</h3>
+                                    <p>Objective talent sorting</p>
+                                </div>
+                            </div>
+                            <div class="feature-item glass">
+                                <i data-lucide="check-circle"></i>
+                                <div>
+                                    <h3>Gap Analysis</h3>
+                                    <p>See what's missing</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results View -->
+            <section id="results-view" class="view">
+                <div class="results-header">
+                    <button id="back-btn" class="btn-text">
+                        <i data-lucide="chevron-left"></i> Back to Upload
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="card glass center">
+                        <h3 id="res-candidate-name">Result</h3>
+                        <div class="chart-container">
+                            <canvas id="scoreChart"></canvas>
+                            <div class="score-overlay">
+                                <span id="score-text">0%</span>
+                                <small>Alignment</small>
+                            </div>
+                        </div>
+                        <div class="match-badge" id="match-status">Good Potential</div>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="card-header">
+                            <i data-lucide="bar-chart-3" class="text-indigo"></i>
+                            <h3>Skill Category Mapping</h3>
+                        </div>
+                        <div class="radar-container" style="height: 250px;">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="card-header">
+                            <i data-lucide="trending-up" class="text-indigo"></i>
+                            <h3>Career & Market Insights</h3>
+                        </div>
+                        <div class="insight-grid" style="display: grid; gap: 1rem; margin-top: 1rem;">
+                            <div class="insight-item glass">
+                                <small class="block text-slate-400">Est. Salary Range</small>
+                                <strong id="res-salary" style="font-size: 1.2rem; color: #10b981;">$0k</strong>
+                            </div>
+                            <div class="insight-item glass">
+                                <small class="block text-slate-400">Current Market Demand</small>
+                                <strong id="res-demand" style="color: #6366f1;">High</strong>
+                            </div>
+                            <div class="insight-item glass">
+                                <small class="block text-slate-400">Remote Friendliness</small>
+                                <strong id="res-remote">80%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass skills-card">
+                        <div class="card-header">
+                            <i data-lucide="check-circle" class="text-indigo"></i>
+                            <h3>Skills Breakdown</h3>
+                        </div>
+                        <div class="skills-sections">
+                            <div class="skills-block">
+                                <h4>Found Skills</h4>
+                                <div id="found-skills" class="pill-container"></div>
+                            </div>
+                            <div class="skills-block">
+                                <h4>Skill Gaps</h4>
+                                <div id="missing-skills" class="pill-container"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass expertise-card">
+                        <div class="card-header">
+                            <i data-lucide="award" class="text-indigo"></i>
+                            <h3>Expertise & Experience</h3>
+                        </div>
+                        <div class="expertise-content">
+                            <div class="exp-row">
+                                <span>Years of Experience:</span>
+                                <strong id="res-experience">0+ Years</strong>
+                            </div>
+                            <div class="exp-row">
+                                <span>Seniority Level:</span>
+                                <strong id="res-seniority">Junior</strong>
+                            </div>
+                            <div class="mt-4">
+                                <h4>Certifications Found</h4>
+                                <div id="found-certs" class="pill-container mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+
+    <!-- Career Trajectory Section -->
+    <div class="card glass mt-8" id="trajectory-section" style="display: none;">
+        <div class="card-header">
+            <i data-lucide="trending-up" class="text-indigo"></i>
+            <h3>Career Trajectory Prediction</h3>
+        </div>
+        <p class="text-slate-400 mb-6 text-sm">Where your skills can take you in the future.</p>
+        <div id="trajectory-container" class="best-fits-grid"></div>
+    </div>
+
+    <!-- Skill Simulator Section -->
+    <div class="card glass mt-8" id="simulator-section" style="display: none;">
+        <div class="card-header">
+            <i data-lucide="zap" class="text-indigo"></i>
+            <h3>Skill Evolution Simulator</h3>
+        </div>
+        <p class="text-slate-400 mb-6 text-sm">See how your match score improves by adding new skills.</p>
+        <div class="simulator-controls" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+            <input type="text" id="sim-skills-input" class="input-field" placeholder="E.g. Spring Boot, Docker"
+                style="flex: 1;">
+            <button id="sim-btn" class="btn-premium" style="width: auto;">Simulate Growth</button>
+        </div>
+        <div id="sim-result" class="hidden"
+            style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 1rem; border: 1px solid rgba(16,185,129,0.2);">
+            Score improvement simulator result.
+        </div>
+    </div>
+
+    <!-- Skill Evolution Simulator Section (Keeping as it is a core feature) -->
+    <div class="card glass mt-8" id="simulator-section" style="display: none;">
+        <div class="card-header">
+            <i data-lucide="zap" class="text-indigo"></i>
+            <h3>Skill Evolution Simulator</h3>
+        </div>
+        <p class="text-slate-400 mb-6 text-sm">See how your match score improves by adding new skills.</p>
+        <div class="simulator-controls" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+            <input type="text" id="sim-skills-input" class="input-field" placeholder="E.g. Spring Boot, Docker"
+                style="flex: 1;">
+            <button id="sim-btn" class="btn-premium" style="width: auto;">Simulate Growth</button>
+        </div>
+        <div id="sim-result" class="hidden"
+            style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 1rem; border: 1px solid rgba(16,185,129,0.2);">
+            Score improvement simulator result.
+        </div>
+    </div>
+    </section>
+
+    <!-- HR View -->
+    <section id="hr-view" class="view">
+        <div style="margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+            <div class="card glass">
+                <div class="card-header">
+                    <i data-lucide="users"></i>
+                    <h2>Bulk Resume Upload</h2>
+                </div>
+                <form id="hr-upload-form">
+                    <div class="form-group">
+                        <label>Job Description</label>
+                        <textarea id="hr-jd-input" placeholder="Paste the job requirements here..."
+                            style="height: 100px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Resumes (Multiple PDF/DOCX)</label>
+                        <div class="file-dropzone" id="hr-dropzone">
+                            <input type="file" id="hr-resume-input" accept=".pdf,.docx" multiple hidden>
+                            <i data-lucide="files" class="icon-large"></i>
+                            <p id="hr-file-name">Select multiple resumes</p>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-premium" id="hr-submit-btn">
+                        <span>Process Candidates</span>
+                        <i data-lucide="cpu"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card glass">
+            <div class="card-header" style="justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <i data-lucide="award" class="text-indigo"></i>
+                    <h2>Top Candidate Ranking</h2>
+                </div>
+                <button id="export-btn" class="btn-text" style="margin-bottom: 0;">
+                    <i data-lucide="download"></i> Export Shortlist
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Candidate</th>
+                            <th>Overall Match</th>
+                            <th>Skill Match</th>
+                            <th>Top Skills</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-body">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #64748b; padding: 3rem;">Upload resumes to
+                                see rankings.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <div id="loader" class="loader-overlay hidden">
+        <div class="spinner"></div>
+        <p>Analyzing application...</p>
+    </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
