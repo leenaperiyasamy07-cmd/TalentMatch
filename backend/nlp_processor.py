@@ -17,10 +17,27 @@ SKILLS_DB = [
     # Design & Tools
     "Figma", "Adobe XD", "Photoshop", "Illustrator", "Sketch", "AutoCAD", "ANSYS", "Mathematica", "Ultimaker Cura", "Unity", "Unreal Engine", "Blender",
     # Mobile
-    "React Native", "Flutter", "Ionic", "Xamarin", "Objective-C",
+    "React Native", "Flutter", "Ionic", "Xamarin", "Objective-C", "Android", "iOS",
     # Other / Concepts
-    "REST API", "GraphQL", "Microservices", "Serverless", "Unit Testing", "TDD", "Agile", "Scrum", "Jira", "Linux", "Unix", "Cybersecurity", "Blockchain", "Solidity"
+    "REST API", "GraphQL", "Microservices", "Serverless", "Unit Testing", "TDD", "Agile", "Scrum", "Jira", "Linux", "Unix", "Cybersecurity", "Blockchain", "Solidity",
+    "System Architecture", "Software Engineering", "Web Development", "Object Oriented Programming", "OOP", "Functional Programming", "Scalability", "Security Protocols", "Incident Response",
+    "Full Stack", "Frontend", "Backend", "Fullstack", "Front-end", "Back-end"
 ]
+
+# Mapping of synonyms to ensure "Fuzzy" matching
+SKILL_SYNONYMS = {
+    "Cybersecurity": ["cyber security", "infosec", "information security", "security protocols", "security"],
+    "System Administration": ["sysadmin", "it infrastructure", "server management", "it support"],
+    "Cloud Computing": ["aws", "azure", "gcp", "cloud migration", "cloud operations", "cloud"],
+    "Network Configuration": ["cisco", "ccna", "networking", "routing", "switching", "network"],
+    "Troubleshooting": ["help desk", "technical support", "it support", "problem solving"],
+    "Data Science": ["machine learning", "ai", "deep learning", "predictive modeling", "data analysis"],
+    "Web Development": ["frontend", "backend", "fullstack", "full stack", "web developer", "ui", "ux", "front-end", "back-end"],
+    "REST API": ["restful api", "apis", "api integration", "web services"],
+    "Full Stack": ["fullstack", "full stack developer", "fullstack developer"],
+    "Frontend": ["front-end", "ui developer", "frontend developer"],
+    "Backend": ["back-end", "api developer", "backend developer"]
+}
 
 class SkillExtractor:
     def __init__(self):
@@ -155,16 +172,6 @@ class SkillExtractor:
         found_skills = set()
         text_lower = text.lower()
         
-        # Mapping of synonyms to Ensure "Fuzzy" matching
-        synonyms = {
-            "Cybersecurity": ["cyber security", "infosec", "information security", "security protocols"],
-            "System Administration": ["sysadmin", "it infrastructure", "server management"],
-            "Cloud Computing": ["aws", "azure", "gcp", "cloud migration", "cloud operations"],
-            "Network Configuration": ["cisco", "ccna", "networking", "routing", "switching"],
-            "Troubleshooting": ["help desk", "technical support", "it support"],
-            "Data Science": ["machine learning", "ai", "deep learning", "predictive modeling"]
-        }
-        
         # 1. Direct Keyword Match
         for skill in self.skills_db:
             pattern = rf"(?<![a-zA-Z0-9]){re.escape(skill)}(?![a-zA-Z0-9])"
@@ -172,9 +179,11 @@ class SkillExtractor:
                 found_skills.add(skill)
                 
         # 2. Synonym Logic
-        for main_skill, alternatives in synonyms.items():
+        for main_skill, alternatives in SKILL_SYNONYMS.items():
             for alt in alternatives:
-                if alt in text_lower:
+                # Use regex for multi-word synonyms to ensure boundary matching
+                alt_pattern = rf"(?<![a-zA-Z0-9]){re.escape(alt)}(?![a-zA-Z0-9])"
+                if re.search(alt_pattern, text, re.IGNORECASE):
                     found_skills.add(main_skill)
                     
         return list(found_skills)

@@ -48,6 +48,9 @@ const exportBtn = document.getElementById('export-btn');
 const trajectorySection = document.getElementById('trajectory-section');
 const trajectoryContainer = document.getElementById('trajectory-container');
 
+const roadmapSection = document.getElementById('roadmap-section');
+const roadmapContainer = document.getElementById('roadmap-container');
+
 const simulatorSection = document.getElementById('simulator-section');
 const simSkillsInput = document.getElementById('sim-skills-input');
 const simBtn = document.getElementById('sim-btn');
@@ -288,6 +291,18 @@ function displayResults(data) {
     renderChart(data.score);
     renderRadarChart(data.radar_data);
 
+    // Score Breakdown
+    const br = data.score_breakdown || {};
+    document.getElementById('br-semantic').style.width = (br.semantic_score || 0) + '%';
+    document.getElementById('br-skills').style.width = (br.skills_match || 0) + '%';
+    document.getElementById('br-certs').style.width = (br.cert_match || 0) + '%';
+    document.getElementById('br-exp').style.width = (br.exp_match || 0) + '%';
+
+    document.getElementById('br-semantic-val').textContent = Math.round(br.semantic_score || 0) + '%';
+    document.getElementById('br-skills-val').textContent = Math.round(br.skills_match || 0) + '%';
+    document.getElementById('br-certs-val').textContent = Math.round(br.cert_match || 0) + '%';
+    document.getElementById('br-exp-val').textContent = Math.round(br.exp_match || 0) + '%';
+
     // Insights
     const ins = data.market_insights || {};
     document.getElementById('res-salary').textContent = ins.estimated_salary || "$0k";
@@ -341,6 +356,9 @@ function displayResults(data) {
     // Trajectory
     renderTrajectory(data.career_trajectories);
 
+    // Roadmap
+    renderRoadmap(data.roadmap);
+
     // Skill Simulator
     simulatorSection.style.display = 'block';
     simResult.classList.add('hidden');
@@ -376,6 +394,33 @@ function renderTrajectory(trajectories) {
         });
     } else {
         trajectorySection.style.display = 'none';
+    }
+}
+
+function renderRoadmap(roadmap) {
+    if (roadmap && Object.keys(roadmap).length > 0) {
+        roadmapSection.style.display = 'block';
+        roadmapContainer.innerHTML = '';
+
+        for (const [skill, steps] of Object.entries(roadmap)) {
+            const skillDiv = document.createElement('div');
+            skillDiv.className = 'roadmap-item glass';
+
+            const stepsHtml = steps.map((step, index) => `
+                <li>
+                    <span class="step-num">${index + 1}</span>
+                    <span>${step}</span>
+                </li>
+            `).join('');
+
+            skillDiv.innerHTML = `
+                <h4>${skill}</h4>
+                <ul>${stepsHtml}</ul>
+            `;
+            roadmapContainer.appendChild(skillDiv);
+        }
+    } else {
+        roadmapSection.style.display = 'none';
     }
 }
 
@@ -430,17 +475,23 @@ function renderRanking() {
     }
 
     appState.hrResults.forEach((item, index) => {
+        console.log(`Candidate: ${item.candidate_name}, Skills:`, item.found_skills); // Debugging
         const tr = document.createElement('tr');
-        const topSkills = item.found_skills.slice(0, 4).map(s =>
-            `<span class="pill found" style="font-size: 0.7rem; padding: 2px 8px; margin: 2px;">${s}</span>`
-        ).join('') + (item.found_skills.length > 4 ? '<span style="color: #64748b; font-size: 0.7rem; margin-left: 4px;">...</span>' : '');
+
+        // Show up to 8 skills for better visibility
+        const found = item.found_skills || [];
+        const topSkills = found.length > 0
+            ? found.slice(0, 8).map(s =>
+                `<span class="pill found" style="font-size: 0.7rem; padding: 2px 8px; margin: 2px;">${s}</span>`
+            ).join('') + (found.length > 8 ? '<span style="color: #64748b; font-size: 0.7rem; margin-top: 4px;">+${found.length - 8} more</span>' : '')
+            : '<span style="color: #64748b; font-style: italic; font-size: 0.7rem;">No direct overlap</span>';
 
         tr.innerHTML = `
     <td><span class="rank-num">#${item.rank}</span></td>
     <td><div style="font-weight: 600; color: #fff;">${item.candidate_name}</div></td>
     <td><div style="font-weight: 700; color: #6366f1;">${item.overall_match}%</div></td>
     <td><div style="font-weight: 500; color: #10b981;">${item.skill_match}%</div></td>
-    <td style="display: flex; flex-wrap: wrap; gap: 4px; padding: 12px 8px;">${topSkills || '<span style="color: #64748b; font-style: italic; font-size: 0.8rem;">No JD Overlap</span>'}</td>
+    <td style="display: flex; flex-wrap: wrap; gap: 4px; padding: 12px 8px; min-width: 280px; align-items: center;">${topSkills}</td>
 `;
         rankingBody.appendChild(tr);
     });
@@ -449,9 +500,10 @@ function renderRanking() {
 // Export CSV
 exportBtn.addEventListener('click', () => {
     if (!appState.hrResults.length) return;
-    let csv = "Rank,Candidate,Match Score,Skill Overlap\n";
+    let csv = "Rank,Candidate,Overall Match,Skill Match,Top Skills\n";
     appState.hrResults.forEach((row, i) => {
-        csv += `${i + 1},"${row.candidate_name}",${row.overall_match}%,${row.skill_match}%\n`;
+        const skills = row.found_skills.join(", ");
+        csv += `${row.rank},"${row.candidate_name}",${row.overall_match}%,${row.skill_match}%,"${skills}"\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);

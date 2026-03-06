@@ -64,6 +64,7 @@ def calculate_match_score(resume_text, job_description, resume_features=None, jd
         
     # Final Weighted Calculation
     # 50% Deep Features (Certs/Skills/Exp) + 50% Semantic (Writing Style/Context)
+    keyword_score = 0.0
     if total_weights > 0:
         keyword_score = feature_points / total_weights
         final_score = (semantic_score * 0.5) + (keyword_score * 0.5)
@@ -76,7 +77,19 @@ def calculate_match_score(resume_text, job_description, resume_features=None, jd
             if keyword_score > 70:
                 final_score = max(final_score, 92.0)
 
-    return round(min(100.0, final_score), 2)
+    # Prepare return data
+    final_score = round(min(100.0, final_score), 2)
+    
+    return {
+        "final_score": final_score,
+        "breakdown": {
+            "semantic_score": round(semantic_score, 2),
+            "feature_score": round(keyword_score, 2),
+            "skills_match": round(skill_pct, 2) if 'skill_pct' in locals() else 0,
+            "cert_match": round(cert_match, 2) if 'cert_match' in locals() else (20 if 'r_certs' in locals() and r_certs else 0),
+            "exp_match": round((100 if r_years >= j_years else min(100, (r_years/5)*100)) if 'r_years' in locals() else 0, 2)
+        }
+    }
 
 def identify_missing_skills(resume_skills, job_skills):
     # Case insensitive comparison

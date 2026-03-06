@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalentMatch AI - Resume Screening</title>
+    <title>TalentMatch - Resume Screening</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
                         <i data-lucide="target"></i>
                     </div>
                     <div>
-                        <h1>TalentMatch AI</h1>
+                        <h1>TalentMatch </h1>
                         <p>Intelligent Resume Screening & Learning</p>
                     </div>
                 </div>
@@ -273,6 +273,54 @@
                             </div>
                         </div>
                         <div class="match-badge" id="match-status">Good Potential</div>
+
+                        <div class="score-breakdown-mini mt-6">
+                            <h4 class="text-xs text-slate-400 uppercase mb-3">Score Analytics</h4>
+                            <div class="breakdown-row">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                    <span class="text-xs">Semantic Match (50%)</span>
+                                    <span id="br-semantic-val" class="text-xs font-bold"
+                                        style="color: var(--primary);">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="br-semantic" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="breakdown-row">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                    <span class="text-xs">Skill Overlap</span>
+                                    <span id="br-skills-val" class="text-xs font-bold"
+                                        style="color: var(--primary);">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="br-skills" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="breakdown-row">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                    <span class="text-xs">Certifications</span>
+                                    <span id="br-certs-val" class="text-xs font-bold"
+                                        style="color: var(--primary);">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="br-certs" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="breakdown-row">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                    <span class="text-xs">Experience</span>
+                                    <span id="br-exp-val" class="text-xs font-bold"
+                                        style="color: var(--primary);">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="br-exp" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card glass">
@@ -346,6 +394,16 @@
                 </div>
     </div>
 
+    <!-- Skill Gap Roadmap Section -->
+    <div class="card glass mt-8" id="roadmap-section" style="display: none;">
+        <div class="card-header">
+            <i data-lucide="book-open" class="text-indigo"></i>
+            <h3>Personalized Learning Roadmap</h3>
+        </div>
+        <p class="text-slate-400 mb-6 text-sm">Follow these steps to bridge your skill gaps for this specific role.</p>
+        <div id="roadmap-container" class="roadmap-grid"></div>
+    </div>
+
     <!-- Career Trajectory Section -->
     <div class="card glass mt-8" id="trajectory-section" style="display: none;">
         <div class="card-header">
@@ -356,25 +414,7 @@
         <div id="trajectory-container" class="best-fits-grid"></div>
     </div>
 
-    <!-- Skill Simulator Section -->
-    <div class="card glass mt-8" id="simulator-section" style="display: none;">
-        <div class="card-header">
-            <i data-lucide="zap" class="text-indigo"></i>
-            <h3>Skill Evolution Simulator</h3>
-        </div>
-        <p class="text-slate-400 mb-6 text-sm">See how your match score improves by adding new skills.</p>
-        <div class="simulator-controls" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-            <input type="text" id="sim-skills-input" class="input-field" placeholder="E.g. Spring Boot, Docker"
-                style="flex: 1;">
-            <button id="sim-btn" class="btn-premium" style="width: auto;">Simulate Growth</button>
-        </div>
-        <div id="sim-result" class="hidden"
-            style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 1rem; border: 1px solid rgba(16,185,129,0.2);">
-            Score improvement simulator result.
-        </div>
-    </div>
-
-    <!-- Skill Evolution Simulator Section (Keeping as it is a core feature) -->
+    <!-- Skill Evolution Simulator Section -->
     <div class="card glass mt-8" id="simulator-section" style="display: none;">
         <div class="card-header">
             <i data-lucide="zap" class="text-indigo"></i>

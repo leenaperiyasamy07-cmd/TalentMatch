@@ -741,14 +741,47 @@ textarea:focus {
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-.icon-wrap {
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    display: flex;
-}
-
 .premium-gradient {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.score-breakdown-mini {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.breakdown-row {
+    margin-bottom: 0.8rem;
+}
+
+.breakdown-row span {
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 3px;
+    transition: width 1s ease-out;
+}
+
+.text-xs {
+    font-size: 0.7rem;
+}
+
+.uppercase {
+    text-transform: uppercase;
 }
 
 .roadmap-grid {

@@ -72,17 +72,12 @@ def predict_career_trajectory(current_skills):
 def simulate_skill_evolution(current_text, current_skills, potential_skills, jd_text, jd_skills):
     from matching_engine import calculate_match_score
     
-    # 1. Current Score (Weighted Semantic + Keyword)
     current_score = calculate_match_score(current_text, jd_text, current_skills, jd_skills)
-    
-    # 2. Simulate new state with potential skills
-    # We append skills to text for TF-IDF and to list for keyword matching
     simulated_text = current_text + " " + " ".join(potential_skills)
     future_skills = list(set(current_skills + potential_skills))
     
     future_score = calculate_match_score(simulated_text, jd_text, future_skills, jd_skills)
-    
-    # Ensure score doesn't decrease and capped at 100
+
     future_score = max(current_score, min(100.0, future_score))
     
     return {
